@@ -32,6 +32,7 @@ export const AddUserDialog = ({ show, onShowChange }: AddUserDialogProps) => {
   useEffect(() => {
     if (isSuccess) {
       reset();
+      resetForm();
       onShowChange(false);
     }
   }, [isSuccess, onShowChange]);
@@ -40,6 +41,7 @@ export const AddUserDialog = ({ show, onShowChange }: AddUserDialogProps) => {
     handleSubmit,
     control,
     formState: { errors },
+    reset: resetForm,
   } = useForm<User>();
 
   return (

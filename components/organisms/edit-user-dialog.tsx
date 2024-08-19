@@ -42,6 +42,7 @@ export const EditUserDialog = ({
     if (isSuccess) {
       reset();
       onShowChange(false);
+      resetForm();
     }
   }, [isSuccess, onShowChange]);
 
@@ -49,6 +50,7 @@ export const EditUserDialog = ({
     handleSubmit,
     control,
     formState: { errors },
+    reset: resetForm,
   } = useForm<User>({
     defaultValues: initialValues,
   });
