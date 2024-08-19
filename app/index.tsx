@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { View, Text } from "react-native";
 
 import { Input } from "@/components/atoms/input";
@@ -7,15 +7,19 @@ import { AddUserDialog } from "@/components/organisms/add-user-dialog";
 import { UserTable } from "@/components/organisms/user-table/user-table";
 import { tableFields } from "@/constants/user-table-fields";
 import { useGetUsers } from "@/hooks/use-get-users";
+import { searchUsers } from "@/utils/search-users";
 
 export default function HomeScreen() {
   const pageTitle = `User Management`;
 
-  const { data, isLoading } = useGetUsers();
+  const { data: users, isLoading } = useGetUsers();
   const [showAddUserDialog, setShowAddUserDialog] = useState<boolean>(false);
 
-  // TODO: implement search logic
   const [query, setQuery] = useState<string>("");
+
+  const filteredUsers = useMemo(() => {
+    return searchUsers(users || [], query);
+  }, [users, query]);
 
   const onAddUserDialogShowChange = (value: boolean) => {
     setShowAddUserDialog(value);
@@ -43,7 +47,7 @@ export default function HomeScreen() {
               onChange={(e: any) => setQuery(e.target.value)}
               className="mb-4"
             />
-            <UserTable data={data} fields={tableFields} />
+            <UserTable data={filteredUsers} fields={tableFields} />
           </>
         )}
       </View>
