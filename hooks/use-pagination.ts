@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 
 interface PaginationProps {
-  itemsPerPage: number;
+  itemsPerPage?: number;
   totalItems: number;
 }
 
