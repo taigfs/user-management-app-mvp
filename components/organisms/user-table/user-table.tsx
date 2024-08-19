@@ -1,17 +1,23 @@
+import { useState } from "react";
 import { View, Text } from "react-native";
 
 import { DeleteUserDialog } from "../delete-user-dialog";
 import { EditUserDialog } from "../edit-user-dialog";
 
 import { TableField } from "@/types/table-field";
-import { User } from "@/types/user";
+import { CreatedUser } from "@/types/user";
 
 interface UserTableProps {
-  data: User[];
+  data?: CreatedUser[];
   fields: TableField[];
 }
 
-export const UserTable = ({ data, fields }: UserTableProps) => {
+export const UserTable = ({ data = [], fields }: UserTableProps) => {
+  const [showUpdateUserDialog, setShowUpdateUserDialog] =
+    useState<boolean>(false);
+  const [showDeleteUserDialog, setShowDeleteUserDialog] =
+    useState<boolean>(false);
+
   return (
     <View className="w-full table-auto">
       <View>
@@ -30,12 +36,26 @@ export const UserTable = ({ data, fields }: UserTableProps) => {
       <View>
         {data.map((user) => (
           <View key={user.id} className="border-b flex-row">
-            <View className="px-2 py-2 flex-3">{user.name}</View>
-            <View className="px-2 py-2 flex-4">{user.email}</View>
-            <View className="px-2 py-2 flex-4">{user.phone}</View>
+            <View className="px-2 py-2 flex-3">
+              <Text className="text-white">{user.name}</Text>
+            </View>
+            <View className="px-2 py-2 flex-4">
+              <Text className="text-white">{user.email}</Text>
+            </View>
+            <View className="px-2 py-2 flex-4">
+              <Text className="text-white">{user.phone}</Text>
+            </View>
             <View className="px-2 py-2 flex-2 flex-row">
-              <EditUserDialog />
-              <DeleteUserDialog />
+              <EditUserDialog
+                initialValues={user}
+                show={showUpdateUserDialog}
+                onShowChange={setShowUpdateUserDialog}
+              />
+              <DeleteUserDialog
+                show={showDeleteUserDialog}
+                onShowChange={setShowDeleteUserDialog}
+                id={user.id}
+              />
             </View>
           </View>
         ))}

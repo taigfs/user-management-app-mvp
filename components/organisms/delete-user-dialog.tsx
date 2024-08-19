@@ -1,3 +1,8 @@
+import { useEffect } from "react";
+import { Text } from "react-native";
+
+import { Loading } from "../atoms/loading";
+
 import { Button } from "@/components/atoms/button";
 import {
   Dialog,
@@ -8,11 +13,32 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/molecules/dialog";
+import { useDeleteUser } from "@/hooks/use-delete-user";
 import { TrashIcon } from "@/lib/icons/TrashIcon";
 
-export const DeleteUserDialog = () => {
+interface DeleteUserDialogProps {
+  show: boolean;
+  onShowChange: (value: boolean) => void;
+  id: string;
+}
+
+export const DeleteUserDialog = ({
+  show,
+  onShowChange,
+  id,
+}: DeleteUserDialogProps) => {
+  const { mutate, isSuccess, reset, isLoading } = useDeleteUser(id);
+  const onDelete = () => mutate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+      onShowChange(false);
+    }
+  }, [isSuccess, onShowChange]);
+
   return (
-    <Dialog>
+    <Dialog open={show} onOpenChange={onShowChange}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
@@ -20,7 +46,7 @@ export const DeleteUserDialog = () => {
           className="text-red-500 hover:bg-red-500/10"
         >
           <TrashIcon className="h-5 w-5" />
-          <span className="sr-only">Delete</span>
+          <Text className="sr-only">Delete</Text>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -31,7 +57,15 @@ export const DeleteUserDialog = () => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="destructive">Delete</Button>
+          <Button
+            variant="destructive"
+            className="ml-auto flex-row gap-2"
+            onPress={onDelete}
+            disabled={isLoading}
+          >
+            <Text className="text-white">Delete</Text>
+            {isLoading && <Loading />}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

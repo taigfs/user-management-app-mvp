@@ -1,6 +1,10 @@
 export type User = {
-  id: number;
+  id?: string;
   name: string;
   email: string;
   phone: string;
+};
+
+export type CreatedUser = User & {
+  id: string;
 };

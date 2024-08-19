@@ -2,32 +2,50 @@ import { useState } from "react";
 import { View, Text } from "react-native";
 
 import { Input } from "@/components/atoms/input";
+import { Loading } from "@/components/atoms/loading";
 import { AddUserDialog } from "@/components/organisms/add-user-dialog";
 import { UserTable } from "@/components/organisms/user-table/user-table";
 import { tableFields } from "@/constants/user-table-fields";
-// TODO: Replace with real data
-import { users } from "@/test-utils/users-dummy";
+import { useGetUsers } from "@/hooks/use-get-users";
 
 export default function HomeScreen() {
   const pageTitle = `User Management`;
 
+  const { data, isLoading } = useGetUsers();
+  const [showAddUserDialog, setShowAddUserDialog] = useState<boolean>(false);
+
   // TODO: implement search logic
   const [query, setQuery] = useState<string>("");
+
+  const onAddUserDialogShowChange = (value: boolean) => {
+    setShowAddUserDialog(value);
+  };
 
   return (
     <View className="mt-8 mx-auto px-4 py-8 text-white w-full max-w-4xl">
       <View className="flex items-center justify-between mb-6 flex-row">
         <Text className="text-2xl font-bold text-white">{pageTitle}</Text>
-        <AddUserDialog />
+        <AddUserDialog
+          show={showAddUserDialog}
+          onShowChange={onAddUserDialogShowChange}
+        />
       </View>
       <View className="overflow-x-auto">
-        <Input
-          placeholder="Search..."
-          value={query}
-          onChange={(e: any) => setQuery(e.target.value)}
-          className="mb-4"
-        />
-        <UserTable data={users} fields={tableFields} />
+        {isLoading ? (
+          <View className="flex justify-center">
+            <Loading />
+          </View>
+        ) : (
+          <>
+            <Input
+              placeholder="Search..."
+              value={query}
+              onChange={(e: any) => setQuery(e.target.value)}
+              className="mb-4"
+            />
+            <UserTable data={data} fields={tableFields} />
+          </>
+        )}
       </View>
       <View className="flex justify-end mt-6">{/* TODO: Pagination */}</View>
     </View>

@@ -152,11 +152,11 @@ exports[`renders correctly 1`] = `
         />
       </RNSVGGroup>
     </RNSVGSvgView>
-    <span
+    <Text
       className="sr-only"
     >
       Delete
-    </span>
+    </Text>
   </View>
 </View>
 `;
