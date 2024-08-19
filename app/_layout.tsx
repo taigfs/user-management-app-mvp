@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Theme, ThemeProvider } from "@react-navigation/native";
+import { ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -9,25 +9,12 @@ import Toast from "react-native-toast-message";
 import "react-native-reanimated";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import { NAV_THEME } from "~/lib/constants";
+import { DARK_THEME, LIGHT_THEME } from "@/constants/themes";
 import { useColorScheme } from "~/lib/useColorScheme";
 import "../global.css";
 
-const LIGHT_THEME: Theme = {
-  dark: false,
-  colors: NAV_THEME.light,
-};
-const DARK_THEME: Theme = {
-  dark: true,
-  colors: NAV_THEME.dark,
-};
+export { ErrorBoundary } from "expo-router";
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from "expo-router";
-
-// Prevent the splash screen from auto-hiding before getting the color scheme.
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
@@ -40,7 +27,6 @@ export default function RootLayout() {
     (async () => {
       const theme = await AsyncStorage.getItem("theme");
       if (Platform.OS === "web") {
-        // Adds the background color to the html element to prevent white background on overscroll.
         document.documentElement.classList.add("bg-background");
       }
       if (!theme) {
@@ -70,7 +56,7 @@ export default function RootLayout() {
       <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
         <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
         <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="index/index" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <Toast />

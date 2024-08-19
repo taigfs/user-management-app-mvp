@@ -1,25 +1,29 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { View, Text } from "react-native";
+
+import { useHomeScreen } from "./use-home-screen";
 
 import { Input } from "@/components/atoms/input";
 import { Loading } from "@/components/atoms/loading";
+import { Pagination } from "@/components/molecules/pagination";
 import { AddUserDialog } from "@/components/organisms/add-user-dialog";
 import { UserTable } from "@/components/organisms/user-table/user-table";
 import { tableFields } from "@/constants/user-table-fields";
-import { useGetUsers } from "@/hooks/use-get-users";
-import { searchUsers } from "@/utils/search-users";
 
 export default function HomeScreen() {
   const pageTitle = `User Management`;
-
-  const { data: users, isLoading } = useGetUsers();
+  const itemsPerPage = 2;
   const [showAddUserDialog, setShowAddUserDialog] = useState<boolean>(false);
 
-  const [query, setQuery] = useState<string>("");
-
-  const filteredUsers = useMemo(() => {
-    return searchUsers(users || [], query);
-  }, [users, query]);
+  const {
+    isLoading,
+    query,
+    setQuery,
+    paginatedUsers,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+  } = useHomeScreen({ itemsPerPage });
 
   const onAddUserDialogShowChange = (value: boolean) => {
     setShowAddUserDialog(value);
@@ -47,11 +51,17 @@ export default function HomeScreen() {
               onChange={(e: any) => setQuery(e.target.value)}
               className="mb-4"
             />
-            <UserTable data={filteredUsers} fields={tableFields} />
+            <UserTable data={paginatedUsers} fields={tableFields} />
           </>
         )}
       </View>
-      <View className="flex justify-end mt-6">{/* TODO: Pagination */}</View>
+      <View className="flex justify-end mt-6">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </View>
     </View>
   );
 }
