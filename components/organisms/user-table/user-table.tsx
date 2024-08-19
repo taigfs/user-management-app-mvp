@@ -13,10 +13,12 @@ interface UserTableProps {
 }
 
 export const UserTable = ({ data = [], fields }: UserTableProps) => {
-  const [showUpdateUserDialog, setShowUpdateUserDialog] =
-    useState<boolean>(false);
-  const [showDeleteUserDialog, setShowDeleteUserDialog] =
-    useState<boolean>(false);
+  const [currentUpdateUserDialog, setCurrentUpdateUserDialog] = useState<
+    string | null
+  >(null);
+  const [currentDeleteUserDialog, setCurrentDeleteUserDialog] = useState<
+    string | null
+  >(null);
 
   return (
     <View className="w-full table-auto">
@@ -48,12 +50,16 @@ export const UserTable = ({ data = [], fields }: UserTableProps) => {
             <View className="px-2 py-2 flex-2 flex-row">
               <EditUserDialog
                 initialValues={user}
-                show={showUpdateUserDialog}
-                onShowChange={setShowUpdateUserDialog}
+                show={currentUpdateUserDialog === user.id}
+                onShowChange={(v) =>
+                  setCurrentUpdateUserDialog(v ? user.id : null)
+                }
               />
               <DeleteUserDialog
-                show={showDeleteUserDialog}
-                onShowChange={setShowDeleteUserDialog}
+                show={currentDeleteUserDialog === user.id}
+                onShowChange={(v) =>
+                  setCurrentDeleteUserDialog(v ? user.id : null)
+                }
                 id={user.id}
               />
             </View>

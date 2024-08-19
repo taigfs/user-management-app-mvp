@@ -91,7 +91,13 @@ export const AddUserDialog = ({ show, onShowChange }: AddUserDialogProps) => {
           <Controller
             control={control}
             name="email"
-            rules={{ required: "Email is required" }}
+            rules={{
+              required: "Email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Invalid email address",
+              },
+            }}
             render={({ field: { onChange, value } }) => (
               <>
                 <div className="grid items-center grid-cols-4 gap-4">
@@ -120,7 +126,14 @@ export const AddUserDialog = ({ show, onShowChange }: AddUserDialogProps) => {
           <Controller
             control={control}
             name="phone"
-            rules={{ required: "Phone is required" }}
+            rules={{
+              required: "Phone is required",
+              pattern: {
+                value: /^[0-9\s-()]+$/,
+                message:
+                  "Phone number can only contain numbers, spaces, and special characters like () or -",
+              },
+            }}
             render={({ field: { onChange, value } }) => (
               <>
                 <div className="grid items-center grid-cols-4 gap-4">
